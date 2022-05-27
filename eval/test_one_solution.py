@@ -158,18 +158,22 @@ def main(args):
     print_results(results, args)
 
 
+def expand_user(p) -> str:
+    return str(os.path.expanduser(p))
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Testing a Language Model on Python Code")
-    parser.add_argument("-t","--test_loc", default="~/apps/data_split/test.json", type=str, help="path to the json containing problem paths to be evaluated.")
-    parser.add_argument("-r","--root", default="~/apps/", type=str, help="where the data is stored.")
+    parser.add_argument("-t","--test_loc", default="~/apps/data_split/test.json", type=expand_user, help="path to the json containing problem paths to be evaluated.")
+    parser.add_argument("-r","--root", default="~/apps/", type=expand_user, help="where the data is stored.")
     parser.add_argument("-s","--start", default=0, type=int)
     parser.add_argument("-e","--end", default=None, type=int, help="If you want to evaluate a subset of problems specify start and ending index. File with start and ending prefix must exist typically used with batch evaluation.")
     parser.add_argument("-i", "--index", default=0, type=int)
     parser.add_argument("-p", "--print_results", action="store_true", help="If you have already evaluated the results and only want to print them.")
     parser.add_argument("-d", "--debug", action="store_true")
-    parser.add_argument("--save", type=str, default="~/apps/results", help="Where the evaluated data is loaded from and results saved to.")
+    parser.add_argument("--save", type=expand_user, default="~/apps/results", help="Where the evaluated data is loaded from and results saved to.")
     parser.add_argument("--stop-early", default=None, type=int)
  
     args = parser.parse_args()

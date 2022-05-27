@@ -27,11 +27,15 @@ def combine_codes(args):
         json.dump(tmp_codes, f)
 
 
+def expand_user(p) -> str:
+    return str(os.path.expanduser(p))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", help="print debugging statements",
                         action="store_true")
-    parser.add_argument("--root", default="~/apps/results", type=str, help="which folder to merge the results")
+    parser.add_argument("--root", default="~/apps/results", type=expand_user, help="which folder to merge the results")
     parser.add_argument("-s","--save", default="all_codes.json", type=str, help="Large final save file name. Note other files use the default value.")
     args = parser.parse_args()
 

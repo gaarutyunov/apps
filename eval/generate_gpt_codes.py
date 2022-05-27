@@ -208,21 +208,25 @@ def main(args):
         json.dump(gpt_codes, f)
 
 
+def expand_user(p) -> str:
+    return str(os.path.expanduser(p))
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Run a tranined model to generate Python code.")
     parser.add_argument("--arch", default="gpt2", choices=transformers.GPT2_PRETRAINED_MODEL_ARCHIVE_LIST + ["EleutherAI/gpt-neo-2.7B", "EleutherAI/gpt-neox-20b"])
-    parser.add_argument("-t","--test_loc", default="~/apps/data_split/test.json", type=str)
-    parser.add_argument("-r","--root", default="~/apps/", type=str, help="where the data is stored.")
-    parser.add_argument("-l","--load", default="~/apps/checkpoints/final", type=str)
+    parser.add_argument("-t","--test_loc", default="~/apps/data_split/test.json", type=expand_user)
+    parser.add_argument("-r","--root", default="~/apps/", type=expand_user, help="where the data is stored.")
+    parser.add_argument("-l","--load", default="~/apps/checkpoints/final", type=expand_user)
     parser.add_argument("--peeking", default=0.0, type=float)
     parser.add_argument("--num-beams", default=5, type=int)
     parser.add_argument("-s","--start", default=0, type=int)
     parser.add_argument("-e","--end", default=None, type=int)
     parser.add_argument("-i", "--index", default=None, type=int)
     parser.add_argument("-d", "--debug", action="store_true")
-    parser.add_argument("--save", type=str, default="~/apps/results")
+    parser.add_argument("--save", type=expand_user, default="~/apps/results")
  
     args = parser.parse_args()
 

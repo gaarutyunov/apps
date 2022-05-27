@@ -149,6 +149,10 @@ def main(args):
     run_training(args, train_data)
 
 
+def expand_user(p) -> str:
+    return str(os.path.expanduser(p))
+
+
 if __name__ == "__main__":
     import argparse
 
@@ -159,8 +163,8 @@ if __name__ == "__main__":
     parser.add_argument('--resume', default=None, type=str)
 
     # Dataloading
-    parser.add_argument('--apps-dataroot', default='~/apps/', type=str)
-    parser.add_argument('--apps-train-files', default='~/apps/data_split/train.json', type=str)
+    parser.add_argument('--apps-dataroot', default='~/apps/', type=expand_user)
+    parser.add_argument('--apps-train-files', default='~/apps/data_split/train.json', type=expand_user)
     parser.add_argument('--apps-sample-mode', default='uniform_sol')
     
     # Training
@@ -174,7 +178,7 @@ if __name__ == "__main__":
     parser.add_argument('--fp16', default=True, action='store_true')
 
     # Logging and stuff
-    parser.add_argument('--save-dir', default="~/apps/checkpoints", type=str)
+    parser.add_argument('--save-dir', default="~/apps/checkpoints", type=expand_user)
     parser.add_argument('--log-freq', default=5, type=int)
     parser.add_argument('--save-freq', default=200, type=int)
 
