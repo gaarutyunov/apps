@@ -11,7 +11,7 @@ import fnmatch
 from multiprocessing import Manager
 # from multiprocessing.shared_memory import ShareableList
 
-import dataset_lm.util as dsutil
+import train.dataset_lm.util as dsutil
 import numpy as np
 import gc
 import os
@@ -19,7 +19,7 @@ import io
 
 import transformers
 
-from dataset_lm.reindent import run as run_reindent
+from train.dataset_lm.reindent import run as run_reindent
 from tqdm import tqdm 
 
 import json

@@ -3,7 +3,7 @@ import json
 
 import transformers
 
-from APPSBaseDataset import APPSBaseDataset
+from train.dataset_apps.APPSBaseDataset import APPSBaseDataset
 
 if __name__ == '__main__':
     # Do sanity checking

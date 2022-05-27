@@ -2,33 +2,12 @@
 Tune LM on Code
 """
 
-import io
-import logging
-import math
 import os
 import pprint
-import sys
-import time
-import json
 
 import transformers
-
-from tqdm import tqdm
-from datasets import load_dataset
-from datetime import datetime
-
-import torch
-import torch.distributed as dist
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-import torch.multiprocessing as mp
-
-from dataset_lm.base_lm_dataset import BaseLMDataset
 from dataset_apps.APPSBaseDataset import APPSBaseDataset
 from CustomTensorboardCallback import CustomTensorBoardCallback
-
-# torch.set_num_threads(2)
 
 # https://github.com/pytorch/pytorch/issues/11201
 import torch.multiprocessing

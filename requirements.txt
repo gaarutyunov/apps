@@ -1,13 +1,16 @@
 # Used for evaluation and some common for train too
-numpy
+numpy~=1.22.3
 pyext>=0.7
-sacrebleu # we used 1.5.1
-sacremoses # we used 0.0.45
+sacrebleu~=1.5.0
+sacremoses~=0.0.49
 tensorflow # requires tensorflow 2.0 or above for transformers
 torch>=1.7
 git+https://github.com/huggingface/transformers.git@main#egg=transformers
-psutil # we used 5.7.0
+psutil~=5.9.0
 
 # Used during training
 deepspeed>=0.4.0
 tensorboardX>=2.2
+
+tqdm~=4.62.3
+datasets~=2.0.0
