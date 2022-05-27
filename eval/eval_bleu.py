@@ -25,6 +25,7 @@ md = MosesDetokenizer(lang='en')
 
 random.seed(12345678987654321)
 
+
 def calc_bleu(output:List[str], targets:List[List[str]]):
     max_bleu = 0
     bleu = sacrebleu.corpus_bleu(output, targets)
@@ -33,6 +34,7 @@ def calc_bleu(output:List[str], targets:List[List[str]]):
         if tmp_bleu.score > max_bleu:
             max_bleu = tmp_bleu.score
     return bleu.score, max_bleu
+
 
 def eval_and_save_bleu_scores(args):
     with open(args.test_loc, "r") as f:
@@ -112,6 +114,7 @@ def eval_and_save_bleu_scores(args):
 
     return gpt_bleu
 
+
 def print_results(results):
     bleu_scores = []
     max_bleu_scores = []
@@ -146,8 +149,8 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="BLEU Evaluation")
-    parser.add_argument("-t","--test_loc", default="../data_split/test.json", type=str)
-    parser.add_argument("-r","--root", default="../", type=str, help="where the data is stored.")
+    parser.add_argument("-t","--test_loc", default="~apps/data_split/test.json", type=str)
+    parser.add_argument("-r","--root", default="~/apps/", type=str, help="where the data is stored.")
     parser.add_argument("-s","--start", default=0, type=int)
     parser.add_argument("-e","--end", default=None, type=int)
     parser.add_argument("-i", "--index", default=None, type=int)

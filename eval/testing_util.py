@@ -118,6 +118,16 @@ def get_solutions(problem_list, prob_index):
     return sols
 
 
+def get_starter(problem_list, prob_index):
+    root = problem_list[prob_index]
+
+    starter_code = None
+    if os.path.exists(os.path.join(root, "starter_code.py")):
+        with open(os.path.join(root, "starter_code.py")) as f:
+            starter_code = f.read()
+    return starter_code
+
+
 def run_test(prob_path:str=None, problem_list:List[str]=None, prob_index:int=None, 
         test:str=None, debug:bool=False):
     """
@@ -464,8 +474,8 @@ def run_test(prob_path:str=None, problem_list:List[str]=None, prob_index:int=Non
                     else:
                         print(f"output = {output}, test outputs = {in_outs['outputs'][index]}, inputs = {inputs}, {type(inputs)}, {output == [in_outs['outputs'][index]]}") 
 
-
     return results
+
 
 def custom_compare_(output, ground_truth):
     
@@ -512,6 +522,7 @@ def call_method(method, inputs):
             pass
     return _inner_call_method(method) 
 
+
 def main(args):
     print(args)
     problem_list = sorted(get_valid_problems(args.source))
@@ -538,6 +549,7 @@ def main(args):
 
         print("results = ", tmp)
         print("-2 = compile error, -1 is runtime error, False failed test, True passed test")
+
 
 if __name__ == "__main__":
     args = parse_args()

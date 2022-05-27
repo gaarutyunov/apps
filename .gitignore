@@ -2,3 +2,5 @@
 APPS.tar.gz
 apps_dataset/*
 
+.idea
+.DS_Store

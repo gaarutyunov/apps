@@ -1,8 +1,16 @@
 #!/bin/bash
-#SBATCH -p high_pre 
-#SBATCH -w balrog-cpu
-#SBATCH -c 2 
+#SBATCH -c 2
 #SBATCH --output=R-%j.out
+
+source ~/.bashrc
+module restore default
+
+source activate apps
+
+#env
+type python
+nvcc --version
+echo "PATH=${PATH}" > ~/.deepspeed_env
 
 echo $1 $2 $3 $4 $5
 pushd .

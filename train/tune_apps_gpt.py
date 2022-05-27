@@ -39,13 +39,17 @@ def run_training(args, train_data):
 
     ## Checkpoint Loading ######################################################## 
     if args.load:
-        if '2700' in args.load:
+        if 'neox' in args.load:
+            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.load)
+        elif '2700' in args.load:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.load)
         else:
             model = transformers.GPT2LMHeadModel.from_pretrained(args.load)
         print(f"Loaded model from {args.load}")
     else:
-        if "EleutherAI" in args.arch:
+        if 'neox' in args.arch:
+            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.arch)
+        elif "EleutherAI" in args.arch:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.arch)
         else:
             model = transformers.GPT2LMHeadModel.from_pretrained(args.arch)
@@ -111,7 +115,7 @@ def run_training(args, train_data):
     trainer.train()
     
     if args.local_rank == 0:
-        model.save_pretrained(os.path.join(args.save_dir, "final_checkpoint"))
+        model.save_pretrained(os.path.join(args.save_dir, "final"))
 
 
 def get_dataset(args): 
@@ -149,14 +153,14 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Language Modelling on Code")
-    parser.add_argument('--arch', default='gpt2', choices=transformers.GPT2_PRETRAINED_MODEL_ARCHIVE_LIST + ["EleutherAI/gpt-neo-2.7B"])
+    parser.add_argument('--arch', default='EleutherAI/gpt-neox-20b', choices=transformers.GPT2_PRETRAINED_MODEL_ARCHIVE_LIST + ["EleutherAI/gpt-neo-2.7B", "EleutherAI/gpt-neox-20b"])
     parser.add_argument('--dummy-model', action='store_true')
     parser.add_argument('--load', default=None, type=str)
     parser.add_argument('--resume', default=None, type=str)
 
     # Dataloading
-    parser.add_argument('--apps-dataroot', default='../apps/', type=str)
-    parser.add_argument('--apps-train-files', default='../apps/data_split/train.json', type=str)
+    parser.add_argument('--apps-dataroot', default='~/apps/', type=str)
+    parser.add_argument('--apps-train-files', default='~/apps/data_split/train.json', type=str)
     parser.add_argument('--apps-sample-mode', default='uniform_sol')
     
     # Training
@@ -164,18 +168,16 @@ if __name__ == "__main__":
     parser.add_argument('--lr', default=5e-5, type=float)
     # parser.add_argument('--lr-warmup-steps', default=500, type=int)
     parser.add_argument('--batch-size-per-replica', default=8, type=int)
-    parser.add_argument('--grad-acc-steps', default=4, type=int)
-    parser.add_argument('--local_rank', default=-1, type=int)
-    parser.add_argument('--deepspeed', default=None, type=str)
-    parser.add_argument('--fp16', default=False, action='store_true')
+    parser.add_argument('--grad-acc-steps', default=8, type=int)
+    parser.add_argument('--local_rank', default=0, type=int)
+    parser.add_argument('--deepspeed', default="deepspeed_config.json", type=str)
+    parser.add_argument('--fp16', default=True, action='store_true')
 
     # Logging and stuff
-    parser.add_argument('--save-dir', default="checkpoints/TEMP", type=str)
+    parser.add_argument('--save-dir', default="~/apps/checkpoints", type=str)
     parser.add_argument('--log-freq', default=5, type=int)
     parser.add_argument('--save-freq', default=200, type=int)
 
     args = parser.parse_args()
 
-    args.save_dir = os.path.join(args.save_dir, datetime.now().strftime("%m-%d-%Y__%H:%M:%S"))
-    
     main(args)

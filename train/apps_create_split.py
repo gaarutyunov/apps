@@ -1,6 +1,6 @@
 import json
 import os
-import pathlib
+
 
 def create_split(split="train", name="train"):
     paths = []
@@ -9,7 +9,6 @@ def create_split(split="train", name="train"):
         root_path = os.path.join(split, folder)
         paths.append(root_path)
 
-
     with open(name+".json", "w") as f:
         json.dump(paths, f)
     
@@ -17,7 +16,9 @@ def create_split(split="train", name="train"):
 
 # insert path to train and test
 # path should be relative to root directory or absolute paths
-paths_to_probs = ["APPS/train", "APPS/test"]
+
+
+paths_to_probs = ["~/apps/APPS/train", "~/apps/APPS/test"]
 names = ["train", "test"]
 
 all_paths = []

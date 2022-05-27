@@ -24,6 +24,7 @@ from tqdm import tqdm
 
 import json
 
+
 class APPSBaseDataset(torch.utils.data.Dataset):
     def __init__(self, dataroot, problem_dirs, mode, max_tokens, sample_mode):
         self.dataroot = dataroot
@@ -36,7 +37,9 @@ class APPSBaseDataset(torch.utils.data.Dataset):
         self.samples = []           # Should be set in initialize()
         self.initialize()
 
-        if ('EleutherAI' in mode or '2700' in mode):
+        if 'neox' in mode:
+            self.tokenizer = transformers.GPTNeoXTokenizerFast.from_pretrained(mode)
+        elif ('EleutherAI' in mode or '2700' in mode):
             self.tokenizer = transformers.GPT2Tokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
         elif 'gpt' in self.mode: # Should handle GPT-2 and GPT-Neo
             self.tokenizer = transformers.GPT2Tokenizer.from_pretrained(mode)
@@ -44,7 +47,6 @@ class APPSBaseDataset(torch.utils.data.Dataset):
             self.tokenizer = transformers.RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         else:
             raise NotImplementedError()
-
 
     def initialize(self):
         """
@@ -101,10 +103,8 @@ class APPSBaseDataset(torch.utils.data.Dataset):
         self.samples = all_samples
         self.samples_dict = all_samples_dict
 
-
     def __len__(self):
         return len(self.samples)
-
 
     def pack_samples(self, idx):
         """
@@ -158,7 +158,7 @@ class APPSBaseDataset(torch.utils.data.Dataset):
         
         raw_samples = self.pack_samples(idx)
 
-        if 'gpt' in self.mode:
+        if 'gpt' in self.mode or self.mode in {'codebert'} or 'neox' in self.mode:
             retval = sample_gpt_task(
                 raw_samples,
                 max_tokens=self.max_tokens, 
@@ -175,6 +175,7 @@ class APPSBaseDataset(torch.utils.data.Dataset):
     
         gc.collect()
         return retval
+
 
 def sample_gpt_task(raw_samples, max_tokens, tokenizer):
     """
@@ -249,13 +250,15 @@ if __name__ == '__main__':
     # Do sanity checking
     with open("~/apps/data_split/train.json") as f:
         fnames = json.load(f)
-    
-    tokenizer = transformers.GPT2Tokenizer.from_pretrained('gpt2')
+
+    model = transformers.GPTNeoXForCausalLM.from_pretrained("EleutherAI/gpt-neox-20b")
+    tokenizer = transformers.GPTNeoXTokenizerFast.from_pretrained("EleutherAI/gpt-neox-20b")
     dataset = APPSBaseDataset(
         dataroot='~/apps/', 
         problem_dirs=fnames,
-        mode='gpt2', 
-        max_tokens=1024
+        mode="EleutherAI/gpt-neox-20b",
+        max_tokens=2048,
+        sample_mode='uniform_prob'
     )
 
     e = dataset[0]
@@ -267,5 +270,3 @@ if __name__ == '__main__':
     labels[labels == -100] = tokenizer.eos_token_id
     labels_str = tokenizer.decode(labels)
     print(labels_str)
-
-    import pdb; pdb.set_trace()

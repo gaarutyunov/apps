@@ -3,6 +3,7 @@ import psutil
 import transformers
 from tensorboardX import SummaryWriter
 
+
 def get_system_info():
     this = psutil.Process(os.getpid())
     mem_usage_bytes = this.memory_info().rss
@@ -19,6 +20,7 @@ def get_system_info():
 
 
 logger = transformers.utils.logging.get_logger(__name__)
+
 
 def rewrite_logs(d):
     new_d = {}

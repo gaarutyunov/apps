@@ -1,8 +1,17 @@
 #!/bin/bash
-#SBATCH -p gpu_jsteinhardt
-#SBATCH -w balrog-gpu
-#SBATCH --gres=gpu:1 
+#SBATCH --gres=gpu:1
 #SBATCH --output=R-%j.out
+#SBATCH --constraint="type_e"
+
+source ~/.bashrc
+module restore default
+
+source activate apps
+
+#env
+type python
+nvcc --version
+echo "PATH=${PATH}" > ~/.deepspeed_env
 
 echo $1 $2 $3 $4 $5 $6
 pushd .

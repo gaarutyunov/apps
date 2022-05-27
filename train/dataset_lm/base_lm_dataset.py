@@ -19,6 +19,7 @@ import time
 
 import transformers
 
+
 class BaseLMDataset(torch.utils.data.Dataset):
     """Configurable LMDataset.
     """

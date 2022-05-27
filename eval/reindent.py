@@ -190,5 +190,6 @@ def main(args):
     else:
         run(sys.stdin, sys.stdout, config)
 
+
 if __name__ == "__main__":
     main(sys.argv)
