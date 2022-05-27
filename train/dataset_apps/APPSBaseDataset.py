@@ -27,7 +27,7 @@ import json
 
 class APPSBaseDataset(torch.utils.data.Dataset):
     def __init__(self, dataroot, problem_dirs, mode, max_tokens, sample_mode):
-        self.dataroot = dataroot
+        self.dataroot = os.path.expanduser(dataroot)
         self.problem_dirs = problem_dirs # Loaded from train/test split json files
 
         self.mode = mode
@@ -248,7 +248,7 @@ if __name__ == '__main__':
     import json
 
     # Do sanity checking
-    with open("~/apps/data_split/train.json") as f:
+    with open(os.path.expanduser("~/apps/data_split/train.json")) as f:
         fnames = json.load(f)
 
     model = transformers.GPTNeoXForCausalLM.from_pretrained("EleutherAI/gpt-neox-20b")
