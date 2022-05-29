@@ -11,7 +11,7 @@ import fnmatch
 from multiprocessing import Manager
 # from multiprocessing.shared_memory import ShareableList
 
-import train.dataset_lm.util as dsutil
+import dataset_lm.util as dsutil
 import numpy as np
 import gc
 import os

@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --cpus-per-gpu=2
 #SBATCH --job-name="apps"
-#SBATCH --time=2-12:00
-#SBATCH --gpus-per-node=6
+#SBATCH --time=0-12:00
+#SBATCH --gpus-per-node=2
 #SBATCH --output="F-"%j.out
 #SBATCH --error="F-"%j.err
 #SBATCH --constraint="type_e"
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 
 
 source ~/.bashrc
@@ -34,4 +34,4 @@ echo '----------------------------------------------------------------------\n'
 
 #Executable
 
-USE_TF=NO deepspeed --hostfile=hostfile tune_apps_gpt.py
+USE_TF=NO deepspeed --hostfile=hostfile train/tune_apps_gpt.py

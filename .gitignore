@@ -4,3 +4,12 @@ apps_dataset/*
 
 .idea
 .DS_Store
+*.out
+*.err
+checkpoints
+data_split
+gpt-neox-20b
+hostfile
+APPS
+*.save*
+__pycache__

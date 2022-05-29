@@ -14,6 +14,10 @@ import torch.multiprocessing
 torch.multiprocessing.set_sharing_strategy('file_system')
 
 
+transformers.logging.set_verbosity_debug()
+os.environ["NCCL_DEBUG"] = "INFO"
+
+
 def run_training(args, train_data):
 
     ## Checkpoint Loading ######################################################## 
@@ -100,11 +104,11 @@ def run_training(args, train_data):
 def get_dataset(args): 
     
     fnames = os.listdir(args.apps_train_files)
- 
+    mode = args.load if args.load is not None else args.arch
     train_data = APPSBaseDataset(
         dataroot=args.apps_dataroot, 
         problem_dirs=fnames,
-        mode=args.arch, 
+        mode=mode, 
         max_tokens=2048 if ('EleutherAI' in args.arch or '2700' in args.load) else 1024,
         sample_mode=args.apps_sample_mode
     )
@@ -134,12 +138,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Language Modelling on Code")
     parser.add_argument('--arch', default='EleutherAI/gpt-neox-20b', choices=transformers.GPT2_PRETRAINED_MODEL_ARCHIVE_LIST + ["EleutherAI/gpt-neo-2.7B", "EleutherAI/gpt-neox-20b"])
     parser.add_argument('--dummy-model', action='store_true')
-    parser.add_argument('--load', default=None, type=str)
+    parser.add_argument('--load', default='~/apps/gpt-neox-20b', type=os.path.expanduser)
     parser.add_argument('--resume', default=None, type=str)
 
     # Dataloading
-    parser.add_argument('--apps-dataroot', default='~/apps/', type=os.path.expanduser)
-    parser.add_argument('--apps-train-files', default='~/apps/data_split/train.json', type=os.path.expanduser)
+    parser.add_argument('--apps-dataroot', default='~/apps/APPS/train', type=os.path.expanduser)
+    parser.add_argument('--apps-train-files', default='~/apps/APPS/train', type=os.path.expanduser)
     parser.add_argument('--apps-sample-mode', default='uniform_sol')
     
     # Training
@@ -148,8 +152,8 @@ if __name__ == "__main__":
     # parser.add_argument('--lr-warmup-steps', default=500, type=int)
     parser.add_argument('--batch-size-per-replica', default=8, type=int)
     parser.add_argument('--grad-acc-steps', default=8, type=int)
-    parser.add_argument('--local_rank', default=0, type=int)
-    parser.add_argument('--deepspeed', default="deepspeed_config.json", type=str)
+    parser.add_argument('--local_rank', default=-1, type=int)
+    parser.add_argument('--deepspeed', default="~/apps/train/deepspeed_config.json", type=os.path.expanduser)
     parser.add_argument('--fp16', default=True, action='store_true')
 
     # Logging and stuff
