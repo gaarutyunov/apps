@@ -4,18 +4,38 @@
         "loss_scale": 0,
         "loss_scale_window": 1000,
         "hysteresis": 2,
-        "min_loss_scale": 1
+        "min_loss_scale": 1,
+        "initial_scale_power": 16
     },
 
     "zero_optimization": {
-        "stage": 2,
-        "allgather_partitions": true,
-        "allgather_bucket_size": 1e8,
+	"stage": 3,
+        "offload_optimizer": {
+            "device": "cpu",
+            "pin_memory": true
+        },
+        "offload_param": {
+            "device": "cpu",
+            "pin_memory": true
+        },
         "overlap_comm": true,
-        "reduce_scatter": true,
-        "reduce_bucket_size": 1e8,
         "contiguous_gradients": true,
-        "cpu_offload": true
+        "sub_group_size": 1e9,
+        "reduce_bucket_size": "auto",
+        "stage3_prefetch_bucket_size": "auto",
+        "stage3_param_persistence_threshold": "auto",
+        "stage3_max_live_parameters": 1e9,
+        "stage3_max_reuse_distance": 1e9,
+        "stage3_gather_16bit_weights_on_model_save": true
+    },
+
+    "activation_checkpointing": {
+    	"partition_activations": true,
+    	"cpu_checkpointing": true,
+    	"contiguous_memory_optimization": true,
+    	"number_checkpoints": null,
+    	"synchronize_checkpoint_boundary": true,
+    	"profile": true
     },
 
     "zero_allow_untested_optimizer": true,
@@ -23,24 +43,24 @@
     "steps_per_print": 2000,
     "wall_clock_breakdown": false,
     "dump_state": false, 
-    "train_batch_size": 'auto',
+    "train_batch_size": "auto",
 
     "optimizer": {
         "type": "AdamW",
         "params": {
-            "lr": 5e-05,
-            "betas": [ 0.9, 0.999 ],
-            "eps": 1e-8,
-            "weight_decay": 0.05
+            "lr": "auto",
+            "betas": "auto",
+            "eps": "auto",
+            "weight_decay": "auto"
         }
     },
 
     "scheduler": {
         "type": "WarmupLR",
         "params": {
-            "warmup_min_lr": 0,
-            "warmup_max_lr": 5e-05,
-            "warmup_num_steps": 0
+            "warmup_min_lr": "auto",
+            "warmup_max_lr": "auto",
+            "warmup_num_steps": "auto"
         }
-    }   
+    }
 }

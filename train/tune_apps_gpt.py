@@ -16,6 +16,7 @@ torch.multiprocessing.set_sharing_strategy('file_system')
 
 transformers.logging.set_verbosity_debug()
 os.environ["NCCL_DEBUG"] = "INFO"
+os.environ["MASTER_PORT"] = "19994"
 
 
 def run_training(args, train_data):
@@ -23,7 +24,7 @@ def run_training(args, train_data):
     ## Checkpoint Loading ######################################################## 
     if args.load:
         if 'neox' in args.load:
-            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.load)
+            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.load).half().cuda()
         elif '2700' in args.load:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.load)
         else:
@@ -31,7 +32,7 @@ def run_training(args, train_data):
         print(f"Loaded model from {args.load}")
     else:
         if 'neox' in args.arch:
-            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.arch)
+            model = transformers.GPTNeoXForCausalLM.from_pretrained(args.arch).half().cuda()
         elif "EleutherAI" in args.arch:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.arch)
         else:
@@ -56,7 +57,6 @@ def run_training(args, train_data):
     training_args = transformers.TrainingArguments(
         output_dir=args.save_dir,
         overwrite_output_dir=False,
-
         do_train=True,
         do_eval=False,
         do_predict=True,
@@ -66,6 +66,7 @@ def run_training(args, train_data):
         num_train_epochs=args.epochs,
         per_device_train_batch_size=args.batch_size_per_replica,
         gradient_accumulation_steps=args.grad_acc_steps,
+	gradient_checkpointing=True,
 
         learning_rate=args.lr,
         weight_decay=0.05,
@@ -84,7 +85,7 @@ def run_training(args, train_data):
         local_rank=args.local_rank,
 
         deepspeed=args.deepspeed,
-        fp16=args.fp16,
+        fp16=True,
     )
 
     trainer = transformers.Trainer(
@@ -150,8 +151,8 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', default=10, type=int)
     parser.add_argument('--lr', default=5e-5, type=float)
     # parser.add_argument('--lr-warmup-steps', default=500, type=int)
-    parser.add_argument('--batch-size-per-replica', default=8, type=int)
-    parser.add_argument('--grad-acc-steps', default=8, type=int)
+    parser.add_argument('--batch-size-per-replica', default=1, type=int)
+    parser.add_argument('--grad-acc-steps', default=4, type=int)
     parser.add_argument('--local_rank', default=-1, type=int)
     parser.add_argument('--deepspeed', default="~/apps/train/deepspeed_config.json", type=os.path.expanduser)
     parser.add_argument('--fp16', default=True, action='store_true')
