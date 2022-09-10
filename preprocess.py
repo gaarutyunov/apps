@@ -20,7 +20,7 @@ def reindent_code(codestr):
     run_reindent(
         codestr,
         ret,
-        config = {
+        config={
             "dry-run": False,
             "help": False,
             "to": 4,
@@ -29,8 +29,8 @@ def reindent_code(codestr):
             "encoding": "utf-8",
             "is-tabs": False,
             "tabsize": 4,
-            "all-tabs": False
-        }
+            "all-tabs": False,
+        },
     )
 
     return ret.getvalue()
@@ -39,9 +39,9 @@ def reindent_code(codestr):
 class APPSBaseDataset(Dataset):
     def __init__(self, dataroot, problem_dirs):
         self.dataroot = dataroot
-        self.problem_dirs = problem_dirs # Loaded from train/test split json files
+        self.problem_dirs = problem_dirs  # Loaded from train/test split json files
 
-        self.samples = []           # Should be set in initialize()
+        self.samples = []  # Should be set in initialize()
         self.initialize()
 
     def initialize(self):
@@ -52,7 +52,7 @@ class APPSBaseDataset(Dataset):
         all_samples = []
         skipped_problems = []
 
-        all_samples_dict = {} # Mapping from question_fname to list of samples
+        all_samples_dict = {}  # Mapping from question_fname to list of samples
 
         print(f"Loading {len(self.problem_dirs)} problems from {self.dataroot}.")
         for problem_name in tqdm(self.problem_dirs):
@@ -71,18 +71,18 @@ class APPSBaseDataset(Dataset):
                 skipped_problems.append(problem_name)
                 continue
 
-            if (os.path.isfile(starter_code)):
-                with open(starter_code, 'r') as f:
+            if os.path.isfile(starter_code):
+                with open(starter_code, "r") as f:
                     starter_code = f.read()
             else:
                 starter_code = ""
 
             # Read the question description
-            with open(question_fname, 'r') as f:
+            with open(question_fname, "r") as f:
                 question_str = f.read()
 
             # Read all the solutions
-            with open(sols_fname, 'r') as f:
+            with open(sols_fname, "r") as f:
                 sols_str_list = json.load(f)
                 for sol_str in sols_str_list:
                     sol_str = reindent_code(sol_str)
@@ -111,17 +111,17 @@ class APPSBaseDataset(Dataset):
         }
 
 
-with open('train.json') as f:
+with open("train.json") as f:
     fnames = json.load(f)
 
-dataset = APPSBaseDataset(dataroot='.', problem_dirs=fnames)
+dataset = APPSBaseDataset(dataroot=".", problem_dirs=fnames)
 
 iterator = iter(dataset)
 
-with open('apps.jsonl', 'a') as f:
+with open("apps.jsonl", "a") as f:
     for n in tqdm(iterator):
         json.dump(n, f)
-        f.write('\n')
+        f.write("\n")
 
 
-subprocess.run(['zstd', 'apps.jsonl'])
+subprocess.run(["zstd", "apps.jsonl"])

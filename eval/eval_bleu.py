@@ -18,15 +18,16 @@ from tqdm import tqdm
 
 from typing import List
 
-#bleu imports
+# bleu imports
 import sacrebleu
 from sacremoses import MosesDetokenizer
-md = MosesDetokenizer(lang='en')
+
+md = MosesDetokenizer(lang="en")
 
 random.seed(12345678987654321)
 
 
-def calc_bleu(output:List[str], targets:List[List[str]]):
+def calc_bleu(output: List[str], targets: List[List[str]]):
     max_bleu = 0
     bleu = sacrebleu.corpus_bleu(output, targets)
     for item in targets[0]:
@@ -45,7 +46,7 @@ def eval_and_save_bleu_scores(args):
     codes_loc = os.path.join(args.save, f"all_codes.json")
     if not os.path.exists(codes_loc):
         codes_loc = os.path.join(args.save, f"{args.start}-{args.end}_codes.json")
- 
+
     if os.path.exists(codes_loc):
         with open(codes_loc, "r") as f:
             gpt_codes = json.load(f)
@@ -69,7 +70,7 @@ def eval_and_save_bleu_scores(args):
         if args.debug:
             print(f"problem path = {problem}")
         try:
-            output_strs = gpt_codes[str(index+args.start)]
+            output_strs = gpt_codes[str(index + args.start)]
         except:
             continue
 
@@ -86,18 +87,18 @@ def eval_and_save_bleu_scores(args):
         tmp = []
         for sol in sols:
             tmp.append([sol])
-        
+
         sols = tmp
 
         # this is if we generated multiple outputs per problem
         if isinstance(output_strs, list):
-            gpt_bleu[index+args.start] = []
+            gpt_bleu[index + args.start] = []
             for output_str in output_strs:
-                gpt_bleu[index+args.start].extend(calc_bleu([output_str], sols))
+                gpt_bleu[index + args.start].extend(calc_bleu([output_str], sols))
         # one output per problem
         else:
             output_str = output_strs
-            gpt_bleu[index+args.start] = calc_bleu([output_str], sols)
+            gpt_bleu[index + args.start] = calc_bleu([output_str], sols)
 
         if not os.path.exists(args.save):
             os.makedirs(args.save)
@@ -107,7 +108,9 @@ def eval_and_save_bleu_scores(args):
         elif args.index:
             bleu_loc = os.path.join(args.save, f"{args.index}_bleu_results.json")
         else:
-            bleu_loc = os.path.join(args.save, f"{args.start}-{args.end}_bleu_results.json") 
+            bleu_loc = os.path.join(
+                args.save, f"{args.start}-{args.end}_bleu_results.json"
+            )
 
         with open(bleu_loc, "w") as f:
             json.dump(gpt_bleu, f)
@@ -149,15 +152,24 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="BLEU Evaluation")
-    parser.add_argument("-t","--test_loc", default="~apps/data_split/test.json", type=str)
-    parser.add_argument("-r","--root", default="~/apps/", type=str, help="where the data is stored.")
-    parser.add_argument("-s","--start", default=0, type=int)
-    parser.add_argument("-e","--end", default=None, type=int)
+    parser.add_argument(
+        "-t", "--test_loc", default="~apps/data_split/test.json", type=str
+    )
+    parser.add_argument(
+        "-r", "--root", default="~/apps/", type=str, help="where the data is stored."
+    )
+    parser.add_argument("-s", "--start", default=0, type=int)
+    parser.add_argument("-e", "--end", default=None, type=int)
     parser.add_argument("-i", "--index", default=None, type=int)
     parser.add_argument("-d", "--debug", action="store_true")
-    parser.add_argument("-p", "--print_results", action="store_true", help="If you have already evaluated the results and only want to print them.")
+    parser.add_argument(
+        "-p",
+        "--print_results",
+        action="store_true",
+        help="If you have already evaluated the results and only want to print them.",
+    )
     parser.add_argument("--save", type=str, default="./results")
- 
+
     args = parser.parse_args()
 
     main(args)

@@ -13,9 +13,9 @@ def get_system_info():
     total_mem_usage_percent = psutil.virtual_memory().percent
 
     return {
-        'system/proc_mem_usage_gb' : mem_usage_gb,
-        'system/total_mem_usage_gb' : total_mem_usage_gb,
-        'system/total_mem_usage_percent' : total_mem_usage_percent
+        "system/proc_mem_usage_gb": mem_usage_gb,
+        "system/total_mem_usage_gb": total_mem_usage_gb,
+        "system/total_mem_usage_percent": total_mem_usage_percent,
     }
 
 
