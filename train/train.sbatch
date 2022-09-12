@@ -5,9 +5,9 @@
 #SBATCH --gpus-per-node=2
 #SBATCH --output="F-"%j.out
 #SBATCH --error="F-"%j.err
-#SBATCH --constraint="type_e"
+#SBATCH --constraint="type_a|type_b|type_c"
 #SBATCH --exclude="cn-043"
-#SBATCH --nodes=2
+#SBATCH --nodes=4
 
 
 source ~/.bashrc
@@ -36,4 +36,4 @@ echo '----------------------------------------------------------------------\n'
 
 #Executable
 
-USE_TF=0 MASTER_PORT=19994 deepspeed --hostfile=hostfile --master_port=19994 tune_apps_gpt.py
+deepspeed --hostfile=hostfile tune_apps_gpt.py
