@@ -40,6 +40,8 @@ class APPSBaseDataset(torch.utils.data.Dataset):
 
         if "neox" in mode:
             self.tokenizer = transformers.GPTNeoXTokenizerFast.from_pretrained(mode)
+        elif "gpt-j" in mode:
+            self.tokenizer = transformers.AutoTokenizer.from_pretrained(mode)
         elif "EleutherAI" in mode or "2700" in mode:
             self.tokenizer = transformers.GPT2Tokenizer.from_pretrained(
                 "EleutherAI/gpt-neo-2.7B"
