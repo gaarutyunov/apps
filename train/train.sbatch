@@ -14,8 +14,8 @@ source ~/.bashrc
 module restore default
 
 conda activate apps
-cd /home/gaarutyunov/apps/train
-/opt/hse/slurm/scripts/get_gpu_indexes.sh
+chmod +x ./get_gpu_indexes_safe_new.sh
+./get_gpu_indexes_safe_new.sh
 
 #env
 echo '----------------------------------------------------------------------\n'
@@ -36,4 +36,4 @@ echo '----------------------------------------------------------------------\n'
 
 #Executable
 
-deepspeed --hostfile=hostfile tune_apps_gpt.py
+deepspeed --hostfile=hostfile_${SLURM_JOB_ID} tune_apps_gpt.py
