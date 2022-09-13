@@ -138,11 +138,11 @@ def main(args):
         problems = problems[start:end]
 
     # Tokenizer
-    tokenizer = transformers.GPT2Tokenizer.from_pretrained(args.arch)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(args.arch)
 
     # Set up model
     print("Loading model...")
-    model = transformers.GPT2LMHeadModel.from_pretrained(args.load)
+    model = transformers.AutoModelForCausalLM.from_pretrained(args.load)
     model.cuda()
     print(f"Loaded {args.load}.")
 
@@ -228,9 +228,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--arch",
-        default="EleutherAI/gpt-neox-20b",
+        default="EleutherAI/gpt-j-6B",
         choices=transformers.GPT2_PRETRAINED_MODEL_ARCHIVE_LIST
-        + ["EleutherAI/gpt-neo-2.7B", "EleutherAI/gpt-neox-20b"],
+        + ["EleutherAI/gpt-neo-2.7B", "EleutherAI/gpt-neox-20b", "EleutherAI/gpt-j-6B"],
     )
     parser.add_argument(
         "-t",
@@ -246,7 +246,7 @@ if __name__ == "__main__":
         help="where the data is stored.",
     )
     parser.add_argument(
-        "-l", "--load", default="~/apps/checkpoints/final", type=os.path.expanduser
+        "-l", "--load", default="~/apps/checkpoints/checkpoint-800", type=os.path.expanduser
     )
     parser.add_argument("--peeking", default=0.0, type=float)
     parser.add_argument("--num-beams", default=5, type=int)
