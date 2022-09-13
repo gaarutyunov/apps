@@ -64,7 +64,7 @@ def eval_and_save_problems(args):
     if not os.path.exists(codes_loc):
         codes_loc = os.path.join(args.save, f"{args.start}-{args.end}_codes.json")
 
-    if os.path.exists(codes_loc):
+    if args.start is None or args.end is None:
         results_loc = os.path.join(args.save, f"all_results.json")
     else:
         results_loc = os.path.join(args.save, f"{args.start}-{args.end}_results.json")
