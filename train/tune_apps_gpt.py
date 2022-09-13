@@ -25,7 +25,7 @@ def run_training(args, train_data):
         if 'neox' in args.load:
             model = transformers.GPTNeoXForCausalLM.from_pretrained(args.load).half().cuda()
         elif 'gpt-j' in args.load:
-            model = transformers.GPTJForCausalLM.from_pretrained(args.load, torch_dtype=torch.float16)
+            model = transformers.GPTJForCausalLM.from_pretrained(args.load)
         elif '2700' in args.load:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.load)
         else:
@@ -35,7 +35,7 @@ def run_training(args, train_data):
         if 'neox' in args.arch:
             model = transformers.GPTNeoXForCausalLM.from_pretrained(args.arch).half().cuda()
         elif 'gpt-j' in args.load:
-            model = transformers.GPTJForCausalLM.from_pretrained(args.load, torch_dtype=torch.float16)
+            model = transformers.GPTJForCausalLM.from_pretrained(args.load)
         elif "EleutherAI" in args.arch:
             model = transformers.GPTNeoForCausalLM.from_pretrained(args.arch)
         else:
