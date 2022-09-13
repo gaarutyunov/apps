@@ -1,39 +1,32 @@
 #!/bin/bash
 
-#SBATCH --cpus-per-gpu=2
-#SBATCH --job-name="apps"
+#SBATCH --job-name="T-apps"
 #SBATCH --time=1-12:00
-#SBATCH --gpus-per-node=1
-#SBATCH --output="E-"%j.out
-#SBATCH --error="E-"%j.err
-#SBATCH --constraint="type_a|type_b|type_c"
+#SBATCH --output=T-%A-%a.out
+#SBATCH --error=T-%A-%a.err
+#SBATCH --mail-user=gaarutyunov@edu.hse.ru
+#SBATCH --mail-type=ALL
+#SBATCH --array=0-26
+#SBATCH --constraint="type_a|type_b|type_c|type_d"
 #SBATCH --nodes=1
-
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=1
 
 source ~/.bashrc
 module restore default
 
 conda activate apps
-chmod +x ./get_gpu_indexes_safe_new.sh
-./get_gpu_indexes_safe_new.sh
 
-#env
-echo '----------------------------------------------------------------------\n'
-type python
-echo '----------------------------------------------------------------------\n'
-conda list
-echo '----------------------------------------------------------------------\n'
-nvcc --version
-echo '----------------------------------------------------------------------\n'
-echo "PATH=${PATH}" > ~/.deepspeed_env
-echo '----------------------------------------------------------------------\n'
-ds_report
-echo '----------------------------------------------------------------------\n'
-python -m torch.utils.collect_env
-echo '----------------------------------------------------------------------\n'
-python test_cuda.py
-echo '----------------------------------------------------------------------\n'
+TOTAL=3011
+SKIP=10
 
-#Executable
+i=$((SLURM_ARRAY_TASK_ID*SKIP))
 
-python generate_gpt_codes.py
+START=$i
+END=$((i+SKIP))
+
+SAVE_LOC="~/apps/results"
+TEST_LOC="~/apps/data_split/test.json"
+
+python test_one_solution.py -s $START -e $END --save $SAVE_LOC --test_loc $TEST_LOC
